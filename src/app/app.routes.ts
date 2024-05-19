@@ -2,12 +2,20 @@ import {Routes} from '@angular/router';
 
 export const routes: Routes = [
     {
-        path: 'player-creation',
-        loadChildren: () => import('./pages/player-creation/player-creation.component').then(m => m.PlayerCreationComponent)
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
     },
     {
-        path: '',
-        redirectTo: 'player-creation',
-        pathMatch: 'full'
+        path: 'home',
+        loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
+    },
+    {
+        path: 'setup',
+        loadComponent: () => import('./setup/setup.component').then(m => m.SetupComponent)
+    },
+    {
+        path: 'game',
+        loadComponent: () => import('./game/game.component').then(m => m.GameComponent)
     }
 ];
