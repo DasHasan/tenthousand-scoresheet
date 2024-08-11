@@ -1,42 +1,54 @@
-<div class="overflow-x-auto p-10 snap-x snap-proximity">
-    <div class="min-w-max flex justify-center py-4 gap-4">
-        @for (i of [1, 2, 3, 4]; track i) {
-            <div class="w-[200px] flex-none transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer snap-center">
-                <app-card></app-card>
-            </div>
-        }
-    </div>
-</div>
-
-<div class="flex justify-center">
-    <div class="p-4 w-full max-w-sm lg:max-w-md flex-none">
-        <form class="space-y-6" ngForm>
-            <div>
-                <label for="text" class="block text-sm font-medium leading-6 text-gray-900">Name</label>
-                <div class="mt-2">
-                    <input id="text" name="text" type="text" autocomplete="text" required
-                           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+<div class="h-svh flex flex-col">
+    <div class="overflow-auto snap-x snap-proximity flex-1">
+        <div class="flex items-center gap-4 outline-red-50 flex-col p-4">
+            @for (player of game.players; track player) {
+                <div class="flex gap-4">
+                    <div class="flex-initial flex justify-center items-center">
+                        <button class="flex-initial rounded-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="w-[200px] flex-none transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer snap-center shadow">
+                        <app-card [player]="player" class="shadow rounded-lg"></app-card>
+                    </div>
                 </div>
-            </div>
+            }
+        </div>
+    </div>
 
-            <div>
-                <ng-container *ngTemplateOutlet="button; context: {text: 'Hinzufügen'}"></ng-container>
-            </div>
-        </form>
+    <div class="flex justify-center flex-initial">
+        <div class="p-4 w-full max-w-sm lg:max-w-md flex-none flex flex-col gap-4">
 
-        <div class="pt-20">
-            <a [routerLink]="['/', 'game']">
-                <ng-container *ngTemplateOutlet="button; context: {text: 'Spiel starten'}"></ng-container>
-            </a>
+            <form ngForm [formGroup]="playerForm">
+                <label for="text" class="block text-sm font-medium text-gray-900">Name</label>
+                <div class="flex gap-1">
+                    <input id="text"
+                           name="text"
+                           type="text"
+                           autocomplete="text"
+                           required
+                           formControlName="name"
+                           class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 flex-1">
+
+                    <button (click)="addPlayer()"
+                            class="flex-initial rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                             stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <button [routerLink]="['/', 'game']"
+                    class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                Spiel starten
+            </button>
+
         </div>
     </div>
 </div>
-
-<ng-template #button let-text="text">
-    <div>
-        <button type="submit"
-                class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-            {{ text }}
-        </button>
-    </div>
-</ng-template>

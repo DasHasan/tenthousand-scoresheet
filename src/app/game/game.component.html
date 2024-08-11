@@ -1,59 +1,56 @@
-<div class="overflow-x-auto snap-x snap-proximity">
-    <div class="min-w-max flex justify-center p-10 gap-4">
-        <div class="w-[200px] flex-none cursor-pointer snap-center">
-            <div class="absolute flex justify-center items-center h-20 w-20 -translate-x-10 -translate-y-10">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-            </div>
+<div class="flex flex-col h-svh bg-white">
+    <div class="overflow-x-auto snap-x snap-proximity flex-1 gap-4">
+        <div class="min-w-max flex justify-center gap-4 h-full p-4">
+            @for (player of game.players; track player) {
+                <div class="w-[200px] snap-center flex flex-col">
+                    <app-card [player]="player" class="flex-initial rounded-t-lg bg-slate-200"></app-card>
 
-            <app-card>
-                <div class="flex w-full items-center justify-center bg-slate-500 rounded-b-lg h-10">
-                    <h3 class="text-sm font-medium text-white select-none">500 Punkte</h3>
+                    <div class="flex-1 overflow-y-auto bg-slate-400 divide-y">
+                        @for (score of player.scores; track score) {
+                            <div class="p-1">
+                                <div class="text-center text-sm font-medium text-white select-none">{{ score }}</div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="flex-initial bg-slate-500 border-t-2 border-slate-600 rounded-b-lg">
+                        <h3 class="text-sm font-medium text-white text-center select-none flex-initial p-4">{{ player.sum }}</h3>
+                    </div>
                 </div>
-            </app-card>
+            }
+        </div>
+    </div>
+
+
+    <!-- Input and buttons row -->
+    <div class="flex flex-row justify-center p-4 gap-4 items-center w-screen flex-initial">
+        <div class="flex-initial">
+            <button type="submit"
+                    class="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 h-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 5h10v10H5V5z" clip-rule="evenodd"/>
+                </svg>
+            </button>
         </div>
 
-        @for (i of [1, 2, 3, 4]; track i) {
-            <div class="w-[200px] flex-none cursor-pointer snap-center">
-                <app-card>
-                    <div class="flex w-full items-center justify-center bg-slate-500 rounded-b-lg h-10">
-                        <h3 class="text-sm font-medium text-white select-none">500 Punkte</h3>
-                    </div>
-                </app-card>
-            </div>
-        }
-    </div>
-</div>
+        <div class="flex-1">
+            <input
+                    type="number"
+                    name="score"
+                    id="score"
+                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md h-10"
+                    placeholder="Punkte">
+        </div>
 
-
-<!-- Input and buttons row -->
-<div class="flex flex-row justify-center p-4 gap-4 items-center">
-    <div class="flex-initial">
-        <button type="submit"
-                class="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 h-10">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5 5h10v10H5V5z" clip-rule="evenodd"/>
-            </svg>
-        </button>
-    </div>
-
-    <div class="flex-1">
-        <input
-                type="number"
-                name="score"
-                id="score"
-                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md h-10"
-                placeholder="Punkte">
-    </div>
-
-    <div class="flex-initial">
-        <button type="submit"
-                class="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 h-10">
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"/>
-            </svg>
-        </button>
+        <div class="flex-initial">
+            <button type="submit"
+                    class="py-2 px-4 bg-indigo-500 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 h-10">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
     </div>
 </div>
