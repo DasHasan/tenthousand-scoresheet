@@ -1,6 +1,6 @@
 export interface Player {
     name: string;
     picture: string;
-    scores: number[];
+    scores?: number[];
     sum: number;
 }

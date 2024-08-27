@@ -1,12 +1,14 @@
-<div class="flex w-full items-center justify-between px-6 py-3">
+<div class="flex w-full items-center justify-between p-4 bg-gradient-to-r from-primary-400 to-primary-500 rounded-t-xl">
     <div class="flex-1 truncate">
-        <div class="flex items-center space-x-3">
-            <h3 class="truncate text-sm font-medium text-gray-900 select-none">{{ player().name }}</h3>
-        </div>
+        <h3 class="truncate text-lg font-semibold text-white select-none">{{ player().name }}</h3>
     </div>
-    <img alt=""
-         class="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"
-         height="40"
-         [ngSrc]="'https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=' + player().picture"
-         width="40">
+    <div class="flex-shrink-0">
+        <img
+            [ngSrc]="'https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=' + player().picture"
+            [alt]="player().name + '\'s avatar'"
+            class="h-12 w-12 rounded-full border-2 border-white shadow-md"
+            height="48"
+            width="48"
+        >
+    </div>
 </div>
