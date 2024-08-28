@@ -1,48 +1,42 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Injectable, signal } from "@angular/core";
 import { Game } from "./game";
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root"
 })
 export class GameService {
-    private readonly STORAGE_KEY = 'zehntausend_game_state';
-    game$ = new BehaviorSubject<Game | null>(null);
+    private readonly STORAGE_KEY = "zehntausend_game_state";
 
-    constructor() {
-        this.loadGameFromStorage();
-    }
+    game = signal<Game | undefined>(undefined);
 
-    startGame(game: Game) {
-        const newGame: Game = {
-            players: game.players.map((player) => ({
+    startGame(game: Partial<Game>) {
+        this.game.set({
+            round: 0,
+            currentPlayerIndex: 0,
+            players: game.players!.map((player) => ({
                 name: player.name,
                 picture: player.picture,
                 sum: 0,
-                scores: [],
+                scores: []
             })),
-        };
-        this.game$.next(newGame);
-        this.saveGameToStorage(newGame);
+            ...game
+        });
     }
 
-    updateGame(game: Game) {
-        this.game$.next(game);
-        this.saveGameToStorage(game);
+    saveGameToStorage(game?: Game) {
+        if (game) {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(game));
+        }
     }
 
-    private saveGameToStorage(game: Game) {
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(game));
-    }
-
-    private loadGameFromStorage() {
+    loadGameFromStorage() {
         const savedGame = localStorage.getItem(this.STORAGE_KEY);
         if (savedGame) {
             try {
                 const game = JSON.parse(savedGame) as Game;
-                this.game$.next(game);
+                this.game.set(game);
             } catch (error) {
-                console.error('Failed to parse saved game:', error);
+                console.error("Failed to parse saved game:", error);
                 localStorage.removeItem(this.STORAGE_KEY);
             }
         }
@@ -50,6 +44,6 @@ export class GameService {
 
     clearSavedGame() {
         localStorage.removeItem(this.STORAGE_KEY);
-        this.game$.next(null);
+        this.game.set(undefined);
     }
 }

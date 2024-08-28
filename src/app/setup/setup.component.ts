@@ -1,11 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { NgTemplateOutlet } from "@angular/common";
-import {
-    FormBuilder,
-    FormsModule,
-    ReactiveFormsModule,
-    Validators
-} from "@angular/forms";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { CardComponent } from "../card/card.component";
 import { Game } from "../game";
@@ -15,8 +9,6 @@ import { GameService } from "../game.service";
     selector: "app-setup",
     standalone: true,
     imports: [
-        NgTemplateOutlet,
-        FormsModule,
         RouterLink,
         CardComponent,
         ReactiveFormsModule
@@ -26,18 +18,20 @@ import { GameService } from "../game.service";
 })
 export class SetupComponent {
     fb = inject(FormBuilder);
+    router = inject(Router);
+    gameService = inject(GameService);
+
     playerForm = this.fb.group({
         name: ["", Validators.required]
     });
-
-    game: Game = {
+    game: Partial<Game> = {
         players: []
     };
 
     addPlayer() {
         if (this.playerForm.valid) {
             const name = this.playerForm.get("name")?.value!;
-            this.game.players.push({
+            this.game.players!.push({
                 name,
                 picture: name + Date.now(),
                 scores: [],
@@ -48,15 +42,11 @@ export class SetupComponent {
     }
 
     removePlayer(index: number) {
-        this.game.players.splice(index, 1);
+        this.game.players!.splice(index, 1);
     }
 
-    gameService = inject(GameService);
-
-    router = inject(Router);
-
     startGame() {
-        if (!this.game.players.length) {
+        if (!this.game.players!.length) {
             return;
         }
         this.gameService.startGame(this.game);

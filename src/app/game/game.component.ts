@@ -1,69 +1,45 @@
-import { Component, inject, OnInit, OnDestroy } from "@angular/core";
-import { NgTemplateOutlet, NgIf } from "@angular/common";
+import { Component, effect, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
 import { CardComponent } from "../card/card.component";
-import { Game } from "../game";
 import { GameService } from "../game.service";
 
 @Component({
     selector: "app-game",
     standalone: true,
-    imports: [NgTemplateOutlet, NgIf, FormsModule, CardComponent],
+    imports: [FormsModule, CardComponent],
     templateUrl: "./game.component.html",
     styles: ``
 })
-export class GameComponent implements OnInit, OnDestroy {
-    game?: Game;
-    currentScore: number = 0;
-    currentPlayerIndex: number = 0;
-    private gameSubscription?: Subscription;
+export class GameComponent {
+    currentScore?: number;
 
     gameService = inject(GameService);
-    router = inject(Router);
 
-    ngOnInit() {
-        this.gameSubscription = this.gameService.game$.subscribe((value) => {
-            if (value) {
-                this.game = value;
-            } else {
-                // No game loaded, redirect to setup or show a "Start New Game" screen
-                this.router.navigate(['/setup']);
-            }
+    game = this.gameService.game;
+
+    constructor() {
+        effect(() => {
+            this.gameService.saveGameToStorage(this.game());
         });
-    }
 
-    ngOnDestroy() {
-        this.gameSubscription?.unsubscribe();
+        if (!this.game()) {
+            console.log(`Loading game from storage`);
+            this.gameService.loadGameFromStorage();
+        }
     }
 
     addScore() {
-        if (this.game && this.currentScore !== 0) {
-            const updatedGame = { ...this.game };
-            // @ts-ignore
-            updatedGame.players[this.currentPlayerIndex].scores.push(this.currentScore);
-            updatedGame.players[this.currentPlayerIndex].sum += this.currentScore;
-            this.gameService.updateGame(updatedGame);
-            this.currentScore = 0;
-            this.selectNextPlayer();
-        }
+        this.game.update(game => !game ? game : ({
+            ...game,
+            currentPlayerIndex: (game.currentPlayerIndex + 1) % game.players.length,
+            players: game.players.map((player, i) => i !== game.currentPlayerIndex ? player : ({
+                ...player,
+                scores: [...player.scores, this.currentScore!],
+                sum: player.sum + this.currentScore!
+            }))
+        }));
+
+        this.currentScore = undefined;
     }
 
-    selectPreviousPlayer() {
-        if (this.game) {
-            this.currentPlayerIndex = (this.currentPlayerIndex - 1 + this.game.players.length) % this.game.players.length;
-        }
-    }
-
-    selectNextPlayer() {
-        if (this.game) {
-            this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.game.players.length;
-        }
-    }
-
-    endGame() {
-        this.gameService.clearSavedGame();
-        this.router.navigate(['/']);
-    }
 }
