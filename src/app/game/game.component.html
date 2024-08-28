@@ -30,7 +30,7 @@
         </div>
 
         <!-- Input and buttons row -->
-        <div class="w-full bg-primary-50 p-4 shadow-lg">
+        <form [formGroup]="scoreForm" class="w-full bg-primary-50 p-4 shadow-lg">
             <div class="mx-auto flex max-w-md items-center justify-center gap-4">
                 <div class="flex-initial">
                     <button
@@ -46,13 +46,13 @@
                 </div>
 
                 <div class="flex-1">
-                    <input
-                        type="number"
-                        name="score"
-                        id="score"
-                        [(ngModel)]="currentScore"
-                        class="block h-12 w-full rounded-md border-primary-300 bg-white shadow-sm transition-colors focus:border-primary-500 focus:ring-primary-400 sm:text-sm"
-                        placeholder="Punkte eingeben" />
+                        <input
+                            type="number"
+                            name="score"
+                            id="score"
+                            formControlName="score"
+                            class="block h-12 w-full rounded-md border-primary-300 bg-white shadow-sm transition-colors focus:border-primary-500 focus:ring-primary-400 sm:text-sm"
+                            placeholder="Punkte eingeben" />
                 </div>
 
                 <div class="flex-initial">
@@ -69,7 +69,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 } @else {
     <div class="flex h-svh items-center justify-center bg-primary-100">
