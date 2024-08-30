@@ -3,46 +3,37 @@ import {
     AbstractControl,
     AsyncValidatorFn,
     FormBuilder,
+    FormControl,
     FormsModule,
     ReactiveFormsModule,
-    ValidationErrors,
-    Validators
+    ValidationErrors
 } from "@angular/forms";
 import { CardComponent } from "../card/card.component";
 import { GameService } from "../game.service";
+import { NgClass } from "@angular/common";
 
 @Component({
     selector: "app-game",
     standalone: true,
-    imports: [FormsModule, CardComponent, ReactiveFormsModule],
+    imports: [FormsModule, CardComponent, ReactiveFormsModule, NgClass],
     templateUrl: "./game.component.html",
     styles: ``
 })
 export class GameComponent {
     private readonly fb = inject(FormBuilder);
+    scoreForm = this.fb.group({
+        score: new FormControl<number | undefined>(undefined, {
+            nonNullable: true,
+            validators: ({ value }) => (
+                value >= 350
+                &&
+                value / 5 % 1 === 0
+            ) ? null : { score: true }
+        })
+    });
     private readonly gameService = inject(GameService);
 
     readonly game = this.gameService.game;
-
-
-    buildScoreValidator = (): AsyncValidatorFn => async (control: AbstractControl<number>): Promise<ValidationErrors | null> => {
-        const value = control.value;
-
-        if (!value) {
-            return null;
-        }
-
-        const hasMinBound = value > 350;
-        const isDivisible = value / 5 % 1 === 0;
-
-        const scoreValid = hasMinBound && isDivisible;
-
-        return !scoreValid ? { scoreValid: true } : null;
-    };
-
-    scoreForm = this.fb.group({
-        score: this.fb.nonNullable.control<number | undefined>(undefined, Validators.required, this.buildScoreValidator())
-    });
 
     constructor() {
         effect(() => {
@@ -55,20 +46,25 @@ export class GameComponent {
         }
     }
 
+    get scoreField(): AbstractControl<number | undefined, number | undefined> | null {
+        return this.scoreForm.get("score");
+    }
+
     addScore() {
+        // Force trigger validation
+        this.scoreField?.markAsTouched()
+
         if (!this.scoreForm.valid) {
             return;
         }
-
-        const score = this.scoreForm.get("score")?.value!;
 
         this.game.update(game => !game ? game : ({
             ...game,
             currentPlayerIndex: (game.currentPlayerIndex + 1) % game.players.length,
             players: game.players.map((player, i) => i !== game.currentPlayerIndex ? player : ({
                 ...player,
-                scores: [...player.scores, score],
-                sum: player.sum + score
+                scores: [...player.scores, this.scoreField?.value!],
+                sum: player.sum + this.scoreField?.value!
             }))
         }));
 

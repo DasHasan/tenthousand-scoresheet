@@ -3,7 +3,11 @@
         <div class="flex-1 snap-x snap-proximity gap-4 overflow-x-auto p-4">
             <div class="flex h-full min-w-max justify-center gap-6">
                 @for (player of game.players; track player; let i = $index) {
-                    <div class="flex w-[220px] snap-center flex-col rounded-xl shadow-lg">
+                    <div class="flex w-[220px] snap-center flex-col rounded-xl shadow-lg relative">
+                        @if (i === game.currentPlayerIndex) {
+                            <div class="absolute inset-0 outline outline-primary-700 outline-offset-4 rounded-xl"></div>
+                        }
+
                         <app-card
                             [player]="player"
                             class="flex-initial rounded-t-xl bg-primary-300"></app-card>
@@ -46,13 +50,15 @@
                 </div>
 
                 <div class="flex-1">
-                        <input
-                            type="number"
-                            name="score"
-                            id="score"
-                            formControlName="score"
-                            class="block h-12 w-full rounded-md border-primary-300 bg-white shadow-sm transition-colors focus:border-primary-500 focus:ring-primary-400 sm:text-sm"
-                            placeholder="Punkte eingeben" />
+                    <input
+                        type="number"
+                        name="score"
+                        id="score"
+                        required
+                        formControlName="score"
+                        class="block h-12 w-full rounded-md bg-white shadow-sm transition-colors focus:border-primary-500 focus:ring-primary-400 sm:text-sm"
+                        [ngClass]="{ 'border-red-300 focus:border-red-500 focus:ring-red-400' : scoreField?.touched && !!scoreField?.errors }"
+                        placeholder="Punkte eingeben" />
                 </div>
 
                 <div class="flex-initial">
